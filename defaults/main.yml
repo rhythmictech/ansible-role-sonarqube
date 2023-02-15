@@ -1,6 +1,7 @@
 ---
 sonar_version: 9.6.0.59041
 
+sonar_db_user: "sonar"
 sonar_db_pass: ""
 sonar_db_host: "sonardb"
 

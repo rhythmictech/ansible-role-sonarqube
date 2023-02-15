@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-sonar.jdbc.username=sonar
+sonar.jdbc.username={{ sonar_db_user }}
 sonar.jdbc.password={{ sonar_db_pass }}
 sonar.jdbc.url=jdbc:postgresql://{{ sonar_db_host }}/sonardb
 
