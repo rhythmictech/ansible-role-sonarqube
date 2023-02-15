@@ -1,0 +1,77 @@
+---
+- name: create sonar group
+  ansible.builtin.group: 
+    name: sonar
+  tags: ['sonar']
+
+- name: create sonar user
+  ansible.builtin.user:
+    name: sonar
+    group: sonar
+    system: yes
+  tags: ['sonar']
+
+- name: get sonar package
+  ansible.builtin.unarchive:
+    src: "https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-{{ sonar_version }}.zip"
+    dest: /opt
+    creates: "/opt/sonarqube-{{ sonar_version }}/lib"
+    remote_src: yes
+    owner: sonar
+    group: sonar
+  tags: ['sonar']
+
+- name: ensure sonar symlink exists
+  ansible.builtin.file:
+    src: "/opt/sonarqube-{{ sonar_version }}"
+    dest: /opt/sonar
+    owner: root
+    group: root
+    state: link
+  tags: ['sonar']
+
+- name: ensure sonar user limits are in place
+  ansible.builtin.copy:
+    src: "etc.security.limits.d.95-sonar.conf"
+    dest: "/etc/security/limits.d/95-sonar.conf"
+    owner: root
+    group: root
+    mode: 0644
+  tags: ['sonar']
+
+- name: modify max map count
+  ansible.posix.sysctl:
+    name: vm.max_map_count
+    value: 262144
+    sysctl_set: yes
+    reload: yes
+    state: present
+    sysctl_file: /etc/sysctl.conf
+  tags: ['sonar']
+
+- name: place systemd unit file
+  ansible.builtin.copy:
+    src: "etc.systemd.system.sonar.service"
+    dest: "/etc/systemd/system/sonar.service"
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload systemd
+  tags: ['sonar']
+
+- name: ensure /opt/sonar/conf/sonar.properties config is in place
+  ansible.builtin.template:
+    src: opt.sonar.conf.sonar.properties.j2
+    dest: /opt/sonar/conf/sonar.properties
+    owner: sonar
+    group: sonar
+    mode: 0644
+  notify: restart sonar
+  tags: ['sonar']
+
+- name: ensure sonar is started and enabled
+  ansible.builtin.service:
+    name: sonar
+    state: started
+    enabled: yes
+  tags: ['sonar']

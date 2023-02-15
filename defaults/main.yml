@@ -1,0 +1,14 @@
+---
+sonar_version: 9.6.0.59041
+
+sonar_db_pass: ""
+sonar_db_host: "sonardb"
+
+sonar_ldap_bind_password: ""
+
+sonar_hostname: sonar.local
+
+sonar_packages:
+  - python-devel
+  - python-pip
+  - openssl-devel

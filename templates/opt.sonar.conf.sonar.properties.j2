@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+sonar.jdbc.username=sonar
+sonar.jdbc.password={{ sonar_db_pass }}
+sonar.jdbc.url=jdbc:postgresql://{{ sonar_db_host }}/sonardb
+
+sonar.web.javaOpts=-Xmx512m -Xms128m -XX:+HeapDumpOnOutOfMemoryError -Djava.net.preferIPv4Stack=tru
+sonar.search.javaOpts=-Xmx512m -Xms512m -XX:MaxDirectMemorySize=256m -XX:+HeapDumpOnOutOfMemoryError
+sonar.ce.javaOpts=-Xmx512m -Xms128m -XX:+HeapDumpOnOutOfMemoryError
